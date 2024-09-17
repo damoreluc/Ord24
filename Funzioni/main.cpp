@@ -21,41 +21,41 @@ tDataPoint fsr[fsr_nPoints] = {
 };
 
 float interpola(tDataPoint t[], int n, float x);
-float ordinata(float x1, float y1, float x2, float y2, float x);
+float ascissa(float x1, float y1, float x2, float y2, float x);
 
 using namespace std;
 
 int main()
 {
     // punto fuori a sinistra
-    float xl = 5;
-    float yl;
-    yl = interpola(fsr, fsr_nPoints, xl);
+    float yl = 5;
+    float xl;
+    xl = interpola(fsr, fsr_nPoints, yl);
 
-    cout << "ascissa x = " << xl << "  ordinata y = " << yl << endl;
+    cout << "  ordinata y = " << yl << "ascissa x = " << xl << endl;
 
-    // punto fuori a destra
-    float xr = 105;
-    float yr;
-    yr = interpola(fsr, fsr_nPoints, xr);
+    // punto fuori a sinistra
+    float yr = 905;
+    float xr;
+    xr = interpola(fsr, fsr_nPoints, yr);
 
-    cout << "ascissa x = " << xr << "  ordinata y = " << yr << endl;
+    cout << "ordinata y = " << yr << "  ascissa x = " << xr  << endl;
 
     // punto nel primo intervallo
-    float xp = 15;
-    float yp;
-    yp = interpola(fsr, fsr_nPoints, xp);
+    float yp = 800;
+    float xp;
+    xp = interpola(fsr, fsr_nPoints, yp);
 
-    cout << "ascissa x = " << xp << "  ordinata y = " << yp << endl;
+    cout << "ordinata y = " << yp << "  ascissa x = " << xp  << endl;
 }
 
 
 //-----------------
 
-// dati i due estremi del segmento, trova l'ordinata y del punto con ascissa x
-float ordinata(float x1, float y1, float x2, float y2, float x)
+// dati i due estremi del segmento, trova l'ascissa x del punto con ordinata y
+float ascissa(float x1, float y1, float x2, float y2, float y)
 {
-    float y;
+    float x;
     // test per evitare divisione per 0
     if (x1 == x2)
     {
@@ -65,40 +65,40 @@ float ordinata(float x1, float y1, float x2, float y2, float x)
     // calcola la pendenza
     float m = (y2 - y1) / (x2 - x1);
 
-    // e l'ordinata del punto intermedio
-    y = y1 + m * (x - x1);
+    // e l'ascissa del punto intermedio
+    x = x1 + (y - y1) / m;
 
-    return y;
+    return x;
 }
 
 // dato l'array t di tipo tDataPoint con n punti della poligonale 2D
-// e data l'ascissa x del punto, restituisce l'ordinata y corrispondente
+// e data l'ordinata y del punto, restituisce l'ascissa x corrispondente
 //
-// Nota: se x < x_min, restituisce la y del primo punto della tabella
-//       se x > x_max, restituisce la y dell'ultimo punto della tabella
-float interpola(tDataPoint t[], int n, float x)
+// Nota: se y < y_min, restituisce la x dell'ultimo punto della tabella
+//       se y > y_max, restituisce la x del primo punto della tabella
+float interpola(tDataPoint t[], int n, float y)
 {
-    float y = 0.0;
-    // escludo i valori di x fuori tabella
-    if (x < t[0].x)
+    float x = 0.0;
+    // escludo i valori di y fuori tabella
+    if (y > t[0].y)
     {
-        y = t[0].y;
-        return y;
+        x = t[0].x;
+        return x;
     }
-    if (x > t[n - 1].x)
+    if (y < t[n - 1].y)
     {
-        y = t[n - 1].y;
-        return y;
+        x = t[n - 1].x;
+        return x;
     }
 
-    // cerco l'intervallo che contiene x
+    // cerco l'intervallo che contiene y
     int i = 0;
-    while (!(x >= t[i].x && x <= t[i+1].x))
+    while (!(y <= t[i].y && y >= t[i+1].y))
     {
         i++;
     }
     // trovato l'intervallo (vedi la variabile i), calcolo l'ordinata
-    y = ordinata(t[i].x, t[i].y, t[i + 1].x, t[i + 1].y, x);
+    x = ascissa(t[i].x, t[i].y, t[i + 1].x, t[i + 1].y, y);
 
-    return y;
+    return x;
 }
